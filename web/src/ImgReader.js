@@ -84,7 +84,8 @@ class ImageUploadCard extends React.Component {
     state = {
       mainState: "initial", // initial, uploaded, multiple
       imageUploaded: 0,
-      selectedFile: null
+      selectedFile: null,
+      initialTestState:null
     };
   
     handleUploadClick = (event) => {
@@ -103,12 +104,17 @@ class ImageUploadCard extends React.Component {
       this.setState({
         mainState: "uploaded",
         selectedFile: event.target.files[0],
-        imageUploaded: 1
+        imageUploaded: 1,
       });
     };
 
     handleTest = (event) =>{
       var files = event.target.files;
+      this.setState({
+        initialTestState: files
+      })
+      console.log("files",files)
+      console.log("this.state.initialTestState",this.state.initialTestState)
 
       for (var i=0; i<files.length; i++) {
         //var item = document.createElement("li");
@@ -162,7 +168,6 @@ class ImageUploadCard extends React.Component {
     renderUploadedState() {
       console.log("renderUploadedState");
       const { classes, theme } = this.props;
-  
       return (
         <React.Fragment>
           <CardActionArea onClick={this.imageResetHandler}>

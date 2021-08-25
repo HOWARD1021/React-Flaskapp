@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 //import App from './App';
-import CustomizedSlider  from './Slider';
+import CustomizedSlider from './Slider';
 import IconLabelButtons from './ButtonType';
 import ImageUploadCard from './ImgReader';
 import reportWebVitals from './reportWebVitals';
@@ -91,58 +91,46 @@ export default function CheckboxLabels() {
   );
 }
 
-class Flask extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      error: null,
-      isLoaded: false,
-      items: [],
-    };
-  }
-
-  componentDidMount() { // before render
+const Flask = () => {
+  const [error, setError] = useState(null)
+  const [items, setitems] = useState([])
+  useEffect(() => {
     fetch("http://localhost:5000/api/v1.0/test")
       .then(res => res.json()) // res == result
       .then(
         (result) => {
-          this.setState({
-            isLoaded: true,
-            items: result.items,
-          });
+          setitems(
+            result.items,
+          );
+          console.log("result", result)
         },
         (error) => {
-          this.setState({
-            isLoaded: true,
-            error,
-          });
+          setError(
+            true,
+          )
         }
       )
-  }
+  }, [])
 
-  renderCheckbox(){
-    return(
-      <CheckboxLabels  />
+
+  const renderCheckbox = () => {
+    return (
+      <CheckboxLabels />
     )
   }
 
-  renderSlider(){
-    return(
+  const renderSlider = () => {
+    return (
       <CustomizedSlider />
     )
   }
 
-  render() {
-    const {error, isLoaded, items} = this.state;
-    console.log(items)
-    if (error) { // fetch api return error  from line25
-      return <div>Error: {error.message}</div>;
-    } else if (!isLoaded) {
-      return <div>Loading...</div>;
-    } else {
-      return (
-        <div className="Flask">
-          <header className="Flask-header">
+  return (
+    <div>
+      {error && <div>Error: {error.message}</div>}
+      {items.length === 0 && <div>Loading...</div>}
+      {!error && <div className="Flask">
+        <header className="Flask-header">
           <ul>
             {items.map(item => (
               <li key={item.id}>
@@ -150,24 +138,24 @@ class Flask extends React.Component {
               </li>
             ))}
             <div className="checkbox">
-              {this.renderCheckbox()}
+              {renderCheckbox}
             </div>
             <div className="slider">
               {<CustomizedSlider />}
             </div>
             <div className="imgreader">
-              {<ImageUploadCard /> }
+              {<ImageUploadCard />}
             </div>
             <div className="button_t">
-              { <IconLabelButtons /> }
+              {<IconLabelButtons />}
             </div>
           </ul>
-          </header>
-        </div>
+        </header>
+      </div>
+      }
+    </div>
+  )
 
-      );
-    }
-  }
 }
 
 ReactDOM.render(
